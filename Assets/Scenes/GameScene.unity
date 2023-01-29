@@ -207,7 +207,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 083817407d4f58041a127cf79108b8ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BlockCount: 3
+  BlockCount: 4
   blocks:
   - {fileID: 915626137892662135}
   - {fileID: 281537286518109970}
@@ -229,7 +229,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ba665ba379b7ef468fcca8b50b9e8d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 2
+  MoveSpeed: 10
+  IsBlockMoving: 0
   hasBlockSelected: 0
   camera: {fileID: 0}
   hoverDistance: 0.2
@@ -237,6 +238,7 @@ MonoBehaviour:
   selectedBlock: {fileID: 0}
   selectedTransform: {fileID: 0}
   selectedPosition: {x: 0, y: 0, z: 0}
+  previousPosition: {x: 0, y: 0, z: 0}
   selectedTowerName: 
   comparedTowerName: 
   assignedIndex: 0
@@ -569,7 +571,7 @@ GameObject:
   - component: {fileID: 281537286518109969}
   - component: {fileID: 281537286518109972}
   - component: {fileID: 281537286518109976}
-  m_Layer: 8
+  m_Layer: 2
   m_Name: Block (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -736,7 +738,7 @@ GameObject:
   - component: {fileID: 915626137892662132}
   - component: {fileID: 915626137892662129}
   - component: {fileID: 915626137892662136}
-  m_Layer: 8
+  m_Layer: 2
   m_Name: Block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -770,7 +772,7 @@ GameObject:
   - component: {fileID: 2119741459299576281}
   - component: {fileID: 2119741459299576286}
   - component: {fileID: 2119741459299576287}
-  m_Layer: 8
+  m_Layer: 2
   m_Name: Block (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -911,7 +913,7 @@ GameObject:
   - component: {fileID: 4387761727482894374}
   - component: {fileID: 4387761727482894397}
   - component: {fileID: 4387761727482894398}
-  m_Layer: 8
+  m_Layer: 2
   m_Name: Block (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1063,7 +1065,7 @@ GameObject:
   - component: {fileID: 4711439829786719492}
   - component: {fileID: 4711439829786719499}
   - component: {fileID: 4711439829786719498}
-  m_Layer: 9
+  m_Layer: 2
   m_Name: Base
   m_TagString: TowerA
   m_Icon: {fileID: 0}
@@ -1345,7 +1347,7 @@ GameObject:
   - component: {fileID: 4711439830622591538}
   - component: {fileID: 4711439830622591549}
   - component: {fileID: 4711439830622591548}
-  m_Layer: 9
+  m_Layer: 2
   m_Name: Base
   m_TagString: TowerA
   m_Icon: {fileID: 0}
@@ -1501,7 +1503,7 @@ GameObject:
   - component: {fileID: 4711439830962786385}
   - component: {fileID: 4711439830962786398}
   - component: {fileID: 4711439830962786399}
-  m_Layer: 9
+  m_Layer: 2
   m_Name: Base
   m_TagString: TowerA
   m_Icon: {fileID: 0}
@@ -1707,7 +1709,7 @@ GameObject:
   - component: {fileID: 4926285452344613405}
   - component: {fileID: 4926285452344613408}
   - component: {fileID: 4926285452344613409}
-  m_Layer: 8
+  m_Layer: 2
   m_Name: Block (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1848,7 +1850,7 @@ GameObject:
   - component: {fileID: 6538013022420459608}
   - component: {fileID: 6538013022420459615}
   - component: {fileID: 6538013022420459616}
-  m_Layer: 8
+  m_Layer: 2
   m_Name: Block (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1994,7 +1996,7 @@ GameObject:
   - component: {fileID: 7422636453317691711}
   - component: {fileID: 7422636453317691697}
   - component: {fileID: 7422636453317691712}
-  m_Layer: 8
+  m_Layer: 2
   m_Name: Block (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2104,7 +2106,7 @@ GameObject:
   - component: {fileID: 8895538895705955682}
   - component: {fileID: 8895538895705955689}
   - component: {fileID: 8895538895705955690}
-  m_Layer: 8
+  m_Layer: 2
   m_Name: Block (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

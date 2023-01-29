@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO.Pipes;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
@@ -11,7 +10,7 @@ public class GameManager : MonoBehaviour {
     public int BlockCount = 1;
 
     //initializes a dictionary for the towers to implement a FIFO order
-    //chars refer to unique towers
+    //string refer to unique towers
     private Dictionary<string, Stack> towers = new Dictionary<string, Stack> {
         {"TowerA", new Stack()},
         {"TowerB", new Stack()},
@@ -23,7 +22,6 @@ public class GameManager : MonoBehaviour {
     private List<GameObject> blocks;
 
     private void Awake() {
-        
         if (instance ==  null) {
             instance = this;
         }
@@ -38,7 +36,6 @@ public class GameManager : MonoBehaviour {
     }
 
     private void InitializeBlocks() {
-        
         //sets up number of blocks based BlockCount
         for(int i = 0; i < blocks.Count; i++)
         {
@@ -76,8 +73,16 @@ public class GameManager : MonoBehaviour {
         int comparedBlockRank = comparedBlock.GetComponent<BlockOrder>().Order;
 
         if (selectedBlockRank < comparedBlockRank) return true;
-
+        
         else return false;
+    }
+
+    public void CheckForWinCondition() {
+        //checks the number of elements of the target tower
+        if (towers["TowerC"].Count >= BlockCount) {
+            Debug.Log("Completed!");
+            //Time.timeScale = 0;
+        }
     }
 
     public void AfterSuccessfulMove(string currentTowerName,string comparedTowerName, GameObject currentBlock) {
