@@ -1,13 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
-
-    public static GameManager instance;
-    
     //initializes how many blocks for the playthrough
     public int BlockCount = 1;
+
+    public int MoveCount = 0;
+
+    public bool GameHasEnded;
+    public bool AutoSolve;
+
+    private UIManager uiManager;
+    [SerializeField]private AutoSolve autoSolve;
 
     //initializes a dictionary for the towers to implement a FIFO order
     //string refer to unique towers
@@ -21,18 +27,24 @@ public class GameManager : MonoBehaviour {
     //total number of blocks available
     private List<GameObject> blocks;
 
-    private void Awake() {
-        if (instance ==  null) {
-            instance = this;
-        }
-        
-        else if (instance != this) {
-            Destroy(gameObject);
-        }
+    private void OnEnable() {
+       SingletonManager.Register(this);
+    }
+
+    private void OnDisable() {
+        SingletonManager.Remove<GameManager>();
     }
 
     private void Start() {
+        uiManager = SingletonManager.Get<UIManager>();
+        GameHasEnded = false;
         InitializeBlocks();
+        
+        if (AutoSolve) {
+            //autoSolve.CalculateTotalMoves(BlockCount);
+           // print(autoSolve.GetTotalMoves());
+           autoSolve.GenerateAutoSolveMoves(BlockCount);
+        }
     }
 
     private void InitializeBlocks() {
@@ -56,6 +68,9 @@ public class GameManager : MonoBehaviour {
         return (GameObject)towers[towerName].Peek();
     }
 
+    public int GetStackCount(string towerName) {
+        return towers[towerName].Count;
+    }
     public bool CheckStack(string towerName) {
         //checks if the stack has elements on it
         if (towers[towerName].Count > 0)
@@ -81,6 +96,7 @@ public class GameManager : MonoBehaviour {
         //checks the number of elements of the target tower
         if (towers["TowerC"].Count >= BlockCount) {
             Debug.Log("Completed!");
+            GameHasEnded = true;
             //Time.timeScale = 0;
         }
     }
@@ -88,5 +104,8 @@ public class GameManager : MonoBehaviour {
     public void AfterSuccessfulMove(string currentTowerName,string comparedTowerName, GameObject currentBlock) {
         towers[currentTowerName].Pop();
         towers[comparedTowerName].Push(currentBlock);
+
+        MoveCount++;
+        uiManager.SetMoveCountText(MoveCount);
     }
 }
