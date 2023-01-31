@@ -10,10 +10,13 @@ public class GameManager : MonoBehaviour {
     public int MoveCount = 0;
 
     public bool GameHasEnded;
+    public bool GameHasStarted = false;
     public bool AutoSolve;
+    
 
     private UIManager uiManager;
     [SerializeField]private AutoSolve autoSolve;
+    [SerializeField] private BlocksController blocksController;
 
     //initializes a dictionary for the towers to implement a FIFO order
     //string refer to unique towers
@@ -37,16 +40,30 @@ public class GameManager : MonoBehaviour {
 
     private void Start() {
         uiManager = SingletonManager.Get<UIManager>();
+        uiManager.MainMenuPanel.SetActive(true);
         GameHasEnded = false;
+    }
+    
+    public void InitializeGame() {
         InitializeBlocks();
-        
+        uiManager.GameUIPanel.SetActive(true);
+        uiManager.MainMenuPanel.SetActive(false);
+
         if (AutoSolve) {
-            //autoSolve.CalculateTotalMoves(BlockCount);
-           // print(autoSolve.GetTotalMoves());
-           autoSolve.GenerateAutoSolveMoves(BlockCount);
+            autoSolve.GenerateAutoSolveMoves(BlockCount);
+            blocksController.StartCoroutine(blocksController.AutoSort());
         }
     }
 
+    private void Update() {
+        if (!GameHasStarted) {
+            if (Input.GetMouseButtonDown(0)) {
+                GameHasStarted = true;
+                InitializeGame();
+            }
+        }
+        
+    }
     private void InitializeBlocks() {
         //sets up number of blocks based BlockCount
         for(int i = 0; i < blocks.Count; i++)

@@ -1,18 +1,15 @@
+using System;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour {
-    public static AudioManager instance;
-
-    private void Awake() {
-        if (instance == null) {
-            instance = this;
-        }
-
-        else if (instance != this) {
-            Destroy(gameObject);
-        }
+    private void OnEnable() {
+        SingletonManager.Register(this);
     }
 
+    private void OnDisable() {
+        SingletonManager.Remove<AudioManager>();
+    }
+    
     private AudioSource[] SFX {
         get {
             return GetComponentsInChildren<AudioSource>();

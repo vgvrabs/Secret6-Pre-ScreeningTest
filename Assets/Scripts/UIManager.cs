@@ -4,7 +4,11 @@ using TMPro;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour {
+
+    public GameObject GameUIPanel;
+    public  GameObject MainMenuPanel;
     [SerializeField] private TextMeshProUGUI moveCountText;
+    
     //private GameManager gameManager;
 
     private void OnEnable() {

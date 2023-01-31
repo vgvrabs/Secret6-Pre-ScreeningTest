@@ -27,42 +27,24 @@ public class BlocksController : MonoBehaviour {
 
   [Header("Tower")] 
   [SerializeField] private string sourceTowerName;
+
   [SerializeField] private string destinationTowerName;
-  [SerializeField] private string auxTowerName;
   [SerializeField] private int assignedIndex;
-  [SerializeField] private int tempBlockCount;
 
   [Header("Snap Positions")] [SerializeField]
   private List<Transform> snapPositions;
-
-
+  
   private void Awake() {
     camera = Camera.main;
   }
 
   private void Start() {
     gameManager = SingletonManager.Get<GameManager>();
-
-    /*if (gameManager.AutoSolve) {
-      //selectedTowerName = "TowerA";
-      StartCoroutine(Sort(3, "TowerA", "TowerB", "TowerC"));
-    }*/
   }
 
-  public IEnumerator WaitAndCallAutoSolve(int blockCount, string from, string aux, string to) {
-    yield return new WaitForSeconds(2f);
-    
-    //Sort(blockCount, from, aux, to);
-  }
-
-  private void Update() {
-    if (canMove) {
-      MoveBlock();
-    }
-
-    if (gameManager.AutoSolve) {
-      if (AutoSolve.GetTotalMoves() > 0 && Time.time >= waitTime) {
-        print("Auto Moves:" + AutoSolve.GetTotalMoves());
+  public IEnumerator AutoSort() {
+    while (!gameManager.GameHasEnded) {
+      if (AutoSolve.GetTotalMoves() > 0) {
         string[] currentMoves = AutoSolve.RemoveQueueMoves();
         sourceTowerName = currentMoves[0];
         destinationTowerName = currentMoves[1];
@@ -72,23 +54,31 @@ public class BlocksController : MonoBehaviour {
         selectedBlock = gameManager.GetTopBlock(sourceTowerName);
         selectedBlock.GetComponent<Rigidbody>().isKinematic = true;
         selectedBlock.GetComponent<Rigidbody>().useGravity = false;
-        
+
         selectedTransform = selectedBlock.transform;
         previousPosition = selectedBlock.transform.position;
-        //makes the selected block float for feedback
-        selectedPosition = new Vector3(selectedTransform.position.x,
-          selectedTransform.position.y + hoverDistance, selectedTransform.position.z);
+
+        selectedPosition = new Vector3(selectedTransform.position.x, selectedTransform.position.y + hoverDistance,
+          selectedTransform.position.z);
 
         selectedBlock.transform.position = selectedPosition;
 
         assignedIndex = AssignIndex(destinationTowerName);
         hasBlockSelected = true;
 
-        waitTime = Time.time + 2f;
+        yield return new WaitForSeconds(waitTime);
       }
+    }
+  }
+  private void Update() {
+    if (!gameManager.GameHasStarted) return;
+    
+    if (canMove) {
+      MoveBlock();
     }
     
     if (IsBlockMoving || gameManager.GameHasEnded) return;
+    
 
     if (Input.GetMouseButtonDown(0) && !gameManager.AutoSolve) {
       Ray ray = camera.ScreenPointToRay(Input.mousePosition);
@@ -100,7 +90,7 @@ public class BlocksController : MonoBehaviour {
           sourceTowerName = hit.collider.name;
 
           if (gameManager.CheckStack(sourceTowerName) == false) return;
-
+          
           selectedBlock = gameManager.GetTopBlock(sourceTowerName);
           selectedBlock.GetComponent<Rigidbody>().isKinematic = true;
           selectedBlock.GetComponent<Rigidbody>().useGravity = false;
@@ -115,6 +105,8 @@ public class BlocksController : MonoBehaviour {
 
           Debug.Log(selectedBlock);
           hasBlockSelected = true;
+          
+          //SetupBlockMovement(false, true);
         }
       }
 
@@ -181,8 +173,8 @@ public class BlocksController : MonoBehaviour {
         //Sort(tempBlockCount,selectedTowerName, comparedTowerName, auxTowerName);
         return;
       }
+      
       //resets all variables
-
       if (gameManager.AutoSolve) return;
       selectedBlock = null;
       sourceTowerName = String.Empty;
@@ -210,46 +202,4 @@ public class BlocksController : MonoBehaviour {
     IsBlockMoving = false;
     hasBlockSelected = false;
   }
-
-  /*public void Sort(int blockNumber, string from, string aux, string to) {
-    if (!IsBlockMoving) {
-      if (blockNumber == 1) {
-        canMove = true;
-        IsBlockMoving = true;
-        selectedTowerName = from;
-        comparedTowerName = to;
-        auxTowerName = aux;
-        tempBlockCount = blockNumber;
-        assignedIndex = AssignIndex(to);
-        selectedBlock = gameManager.GetTopBlock(selectedTowerName);
-        selectedBlock.GetComponent<Rigidbody>().isKinematic = true;
-        selectedBlock.GetComponent<Rigidbody>().useGravity = false;
-        return;
-      }
-      else {
-        Sort(blockNumber - 1, from, to, aux);
-        //StartCoroutine(WaitAndCall(blockNumber - 1, from, to, aux));
-        canMove = true;
-        IsBlockMoving = true;
-        selectedTowerName = from;
-        comparedTowerName = to;
-        auxTowerName = aux;
-        tempBlockCount = blockNumber;
-        assignedIndex = AssignIndex(to);
-        selectedBlock = gameManager.GetTopBlock(selectedTowerName);
-        selectedBlock.GetComponent<Rigidbody>().isKinematic = true;
-        selectedBlock.GetComponent<Rigidbody>().useGravity = false;
-        //print("block from " + from + " moved to " + to);
-        //Sort(blockNumber - 1, aux, from, to);
-        //StartCoroutine(WaitAndCall(blockNumber - 1, aux, from, to));
-
-      }
-    }
-
-    waitTime = Time.time + 1.1f;
-  }*/
-
-  /*public void WaitAndCall() {
-    Sort(gameManager.BlockCount - 1, "TowerA", "TowerB", "TowerC");
-  }*/
 }
