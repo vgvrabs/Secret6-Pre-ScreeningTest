@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
@@ -12,6 +13,7 @@ public class GameManager : MonoBehaviour {
     public bool GameHasEnded;
     public bool GameHasStarted = false;
     public bool AutoSolve;
+    public float TimeStarted;
     
 
     private UIManager uiManager;
@@ -40,11 +42,14 @@ public class GameManager : MonoBehaviour {
 
     private void Start() {
         uiManager = SingletonManager.Get<UIManager>();
-        uiManager.MainMenuPanel.SetActive(true);
+        //uiManager.MainMenuPanel.SetActive(true);
         GameHasEnded = false;
+        AutoSolve = false;
     }
     
     public void InitializeGame() {
+        GameHasStarted = true;
+        TimeStarted = Time.time;
         InitializeBlocks();
         uiManager.GameUIPanel.SetActive(true);
         uiManager.MainMenuPanel.SetActive(false);
@@ -56,12 +61,15 @@ public class GameManager : MonoBehaviour {
     }
 
     private void Update() {
-        if (!GameHasStarted) {
+        /*if (!GameHasStarted) {
+            
+            if (!uiManager.MainMenuPanel) return;
+            
             if (Input.GetMouseButtonDown(0)) {
                 GameHasStarted = true;
                 InitializeGame();
             }
-        }
+        }*/
         
     }
     private void InitializeBlocks() {
@@ -112,8 +120,11 @@ public class GameManager : MonoBehaviour {
     public void CheckForWinCondition() {
         //checks the number of elements of the target tower
         if (towers["TowerC"].Count >= BlockCount) {
-            Debug.Log("Completed!");
+            //Debug.Log("Completed!");
             GameHasEnded = true;
+
+            if (!uiManager.EndGamePanel) return;
+            uiManager.SetEndGamePanel();
             //Time.timeScale = 0;
         }
     }

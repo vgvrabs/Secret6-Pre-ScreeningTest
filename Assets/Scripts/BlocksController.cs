@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -45,15 +44,20 @@ public class BlocksController : MonoBehaviour {
   public IEnumerator AutoSort() {
     while (!gameManager.GameHasEnded) {
       if (AutoSolve.GetTotalMoves() > 0) {
+        //remove the top queue move after using them
         string[] currentMoves = AutoSolve.RemoveQueueMoves();
+        //assign top value as the source
         sourceTowerName = currentMoves[0];
+        //assign the next value as the destination
         destinationTowerName = currentMoves[1];
 
-        canMove = true;
+        //proceed to the moving logic
+        /*canMove = true;
 
         selectedBlock = gameManager.GetTopBlock(sourceTowerName);
         selectedBlock.GetComponent<Rigidbody>().isKinematic = true;
         selectedBlock.GetComponent<Rigidbody>().useGravity = false;
+        selectedBlock.GetComponent<BoxCollider>().enabled = false;
 
         selectedTransform = selectedBlock.transform;
         previousPosition = selectedBlock.transform.position;
@@ -63,12 +67,36 @@ public class BlocksController : MonoBehaviour {
 
         selectedBlock.transform.position = selectedPosition;
 
+        
+        hasBlockSelected = true;*/
+        
         assignedIndex = AssignIndex(destinationTowerName);
-        hasBlockSelected = true;
+        SetupBlockMove(true, false);
 
         yield return new WaitForSeconds(waitTime);
       }
     }
+  }
+
+  private void SetupBlockMove(bool kinematic, bool gravity) {
+    canMove = true;
+
+    selectedBlock = gameManager.GetTopBlock(sourceTowerName);
+    selectedBlock.GetComponent<Rigidbody>().isKinematic = kinematic;
+    selectedBlock.GetComponent<Rigidbody>().useGravity = gravity;
+    selectedBlock.GetComponent<BoxCollider>().enabled = gravity;
+    
+    selectedTransform = selectedBlock.transform;
+    previousPosition = selectedBlock.transform.position;
+
+    selectedPosition = new Vector3(selectedTransform.position.x, selectedTransform.position.y + hoverDistance,
+      selectedTransform.position.z);
+
+    selectedBlock.transform.position = selectedPosition;
+
+    //assignedIndex = AssignIndex(destinationTowerName);
+    hasBlockSelected = true;
+
   }
   private void Update() {
     if (!gameManager.GameHasStarted) return;
@@ -94,6 +122,7 @@ public class BlocksController : MonoBehaviour {
           selectedBlock = gameManager.GetTopBlock(sourceTowerName);
           selectedBlock.GetComponent<Rigidbody>().isKinematic = true;
           selectedBlock.GetComponent<Rigidbody>().useGravity = false;
+          selectedBlock.GetComponent<BoxCollider>().enabled = false;
 
           selectedTransform = selectedBlock.transform;
           previousPosition = selectedBlock.transform.position;
@@ -105,8 +134,6 @@ public class BlocksController : MonoBehaviour {
 
           Debug.Log(selectedBlock);
           hasBlockSelected = true;
-          
-          //SetupBlockMovement(false, true);
         }
       }
 
@@ -159,6 +186,7 @@ public class BlocksController : MonoBehaviour {
       //disables movement for the block
       selectedBlock.GetComponent<Rigidbody>().isKinematic = false;
       selectedBlock.GetComponent<Rigidbody>().useGravity = true;
+      selectedBlock.GetComponent<BoxCollider>().enabled = true;
       
       //allows player input again 
       canMove = false;
@@ -187,6 +215,7 @@ public class BlocksController : MonoBehaviour {
     //resets all values of the block
     selectedBlock.GetComponent<Rigidbody>().isKinematic = false;
     selectedBlock.GetComponent<Rigidbody>().useGravity = true;
+    selectedBlock.GetComponent<BoxCollider>().enabled = true;
     
     //resets the block to its original position
     selectedPosition = previousPosition;
