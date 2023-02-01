@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
     //initializes how many blocks for the playthrough
-    public int BlockCount = 1;
+    public PlayerData PlayerData;
+    public int BlockCount;
 
     public int MoveCount = 0;
 
@@ -35,16 +36,21 @@ public class GameManager : MonoBehaviour {
     private void OnEnable() {
        SingletonManager.Register(this);
     }
-
     private void OnDisable() {
         SingletonManager.Remove<GameManager>();
     }
 
-    private void Start() {
+    private IEnumerator Start() {
+        yield return new WaitForSeconds(0.5f);
+        
         uiManager = SingletonManager.Get<UIManager>();
         //uiManager.MainMenuPanel.SetActive(true);
         GameHasEnded = false;
-        AutoSolve = false;
+        
+        TimeStarted = 0;
+        AutoSolve = PlayerData.IsAutoSolveOn;
+        uiManager.AutoSolveToggle.isOn = AutoSolve;
+        BlockCount = PlayerData.SavedBlockCount;
     }
     
     public void InitializeGame() {

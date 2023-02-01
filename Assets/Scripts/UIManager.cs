@@ -56,6 +56,8 @@ public class UIManager : MonoBehaviour {
         
         MainMenuPanel.SetActive(false);
         SettingsPanel.SetActive(true);
+        AutoSolveToggle.isOn = gameManager.AutoSolve;
+        Slider.value = gameManager.BlockCount;
     }
 
     public void OnClickExitSettingsButton() {
@@ -108,6 +110,8 @@ public class UIManager : MonoBehaviour {
     }
 
     public void OnClickReturnButton() {
+        gameManager.PlayerData.IsAutoSolveOn = AutoSolveToggle.isOn;
+        gameManager.PlayerData.SavedBlockCount = gameManager.BlockCount;
         SceneManager.LoadScene(0);
     }
 }

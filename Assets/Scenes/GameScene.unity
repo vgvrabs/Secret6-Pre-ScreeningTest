@@ -947,7 +947,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 083817407d4f58041a127cf79108b8ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BlockCount: 1
+  PlayerData: {fileID: 11400000, guid: 8444f8b127a4558468c5a2bc383efedc, type: 2}
+  BlockCount: 0
   MoveCount: 0
   GameHasEnded: 0
   GameHasStarted: 0
@@ -6764,7 +6765,7 @@ GameObject:
   - component: {fileID: 8285539182717351768}
   - component: {fileID: 8285539182717351771}
   m_Layer: 5
-  m_Name: CloseSettingsButton
+  m_Name: CloseEndGamePanelButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
