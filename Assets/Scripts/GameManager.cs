@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour {
     
 
     private UIManager uiManager;
+    private AudioManager audioManager;
     [SerializeField]private AutoSolve autoSolve;
     [SerializeField] private BlocksController blocksController;
 
@@ -41,10 +42,12 @@ public class GameManager : MonoBehaviour {
     }
 
     private IEnumerator Start() {
+        uiManager = SingletonManager.Get<UIManager>();
+        audioManager = SingletonManager.Get<AudioManager>();
+
         yield return new WaitForSeconds(0.5f);
         
-        uiManager = SingletonManager.Get<UIManager>();
-        //uiManager.MainMenuPanel.SetActive(true);
+        audioManager.PlaySound("MainMenuBGM", 0);
         GameHasEnded = false;
         
         TimeStarted = 0;
@@ -131,6 +134,7 @@ public class GameManager : MonoBehaviour {
 
             if (!uiManager.EndGamePanel) return;
             uiManager.SetEndGamePanel();
+            audioManager.PlaySound("WinSFX", 0);
             //Time.timeScale = 0;
         }
     }

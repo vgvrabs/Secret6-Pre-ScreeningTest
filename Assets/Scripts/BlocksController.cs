@@ -14,6 +14,7 @@ public class BlocksController : MonoBehaviour {
   [SerializeField] private float waitTime = 0f;
 
   private GameManager gameManager;
+  private AudioManager audioManager;
 
   [SerializeField] private float hoverDistance = 1.0f;
   [SerializeField] private bool canMove = false;
@@ -39,6 +40,7 @@ public class BlocksController : MonoBehaviour {
 
   private void Start() {
     gameManager = SingletonManager.Get<GameManager>();
+    audioManager = SingletonManager.Get<AudioManager>();
   }
 
   public IEnumerator AutoSort() {
@@ -50,25 +52,6 @@ public class BlocksController : MonoBehaviour {
         sourceTowerName = currentMoves[0];
         //assign the next value as the destination
         destinationTowerName = currentMoves[1];
-
-        //proceed to the moving logic
-        /*canMove = true;
-
-        selectedBlock = gameManager.GetTopBlock(sourceTowerName);
-        selectedBlock.GetComponent<Rigidbody>().isKinematic = true;
-        selectedBlock.GetComponent<Rigidbody>().useGravity = false;
-        selectedBlock.GetComponent<BoxCollider>().enabled = false;
-
-        selectedTransform = selectedBlock.transform;
-        previousPosition = selectedBlock.transform.position;
-
-        selectedPosition = new Vector3(selectedTransform.position.x, selectedTransform.position.y + hoverDistance,
-          selectedTransform.position.z);
-
-        selectedBlock.transform.position = selectedPosition;
-
-        
-        hasBlockSelected = true;*/
         
         assignedIndex = AssignIndex(destinationTowerName);
         SetupBlockMove(true, false);
@@ -115,6 +98,7 @@ public class BlocksController : MonoBehaviour {
       if (!hasBlockSelected) {
         //checks if there is no block selected yet and takes that block to compare to the next clicked upon block
         if (Physics.Raycast(ray, out hit)) {
+          audioManager.PlaySound("PickupSFX", 0);
           sourceTowerName = hit.collider.name;
 
           if (gameManager.CheckStack(sourceTowerName) == false) return;
@@ -141,8 +125,8 @@ public class BlocksController : MonoBehaviour {
         //compares the selected block to this one
         if (Physics.Raycast(ray, out hit)) {
           if (hit.collider.name == sourceTowerName) {
-            Debug.Log("Invalid Move");
             ResetBlock();
+            audioManager.PlaySound("InvalidSFX", 0);
             return;
           }
 
@@ -150,9 +134,9 @@ public class BlocksController : MonoBehaviour {
           
           //checks if the second selected tower has stack on them
           if (gameManager.CheckStack(destinationTowerName)) {
-            if (!gameManager.CheckIfMoveIsValid(sourceTowerName, destinationTowerName)) {
-              Debug.Log("Move is Invalid");
+            if (!gameManager.CheckIfMoveIsValid(sourceTowerName, destinationTowerName)) { ;
               ResetBlock();
+              audioManager.PlaySound("InvalidSFX", 0);
               return;
             }
           }
@@ -162,6 +146,7 @@ public class BlocksController : MonoBehaviour {
           //selectedBlock.transform.position = snapPositions[assignedIndex];
           canMove = true;
           IsBlockMoving = true;
+          audioManager.PlaySound("PickupSFX", 0);
           Debug.Log("Move is Valid");
         }
 

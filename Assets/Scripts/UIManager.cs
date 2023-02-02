@@ -114,4 +114,8 @@ public class UIManager : MonoBehaviour {
         gameManager.PlayerData.SavedBlockCount = gameManager.BlockCount;
         SceneManager.LoadScene(0);
     }
+
+    public void OnClickQuitButton() {
+        Application.Quit();
+    }
 }
